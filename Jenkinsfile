@@ -28,5 +28,14 @@ pipeline {
                 }
             }
         }
+
+        stage('Update dev server') {
+            steps {
+                sh """
+                    docker stop gomint
+                    docker run -d --rm -p 0.0.0:19132:19132/udp --name gomint gomint/gomint:latest
+                """
+            }
+        }
     }
 }
