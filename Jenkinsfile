@@ -1,8 +1,8 @@
-parameters {
-    string(name: 'GOMINT_BUILD_NUMBER', defaultValue: 'lastSuccessfulBuild', description: 'Which Gomint build should i bundle?')
-}
-
 node {
+    parameters {
+        string(name: 'GOMINT_BUILD_NUMBER', defaultValue: 'lastSuccessfulBuild', description: 'Which Gomint build should i bundle?')
+    }
+
     def app
 
     stage('Clone repository') {
