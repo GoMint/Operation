@@ -9,6 +9,10 @@ RUN ["jlink", "--compress=2", "--strip-debug", "--module-path", "/opt/java/openj
 
 FROM alpine
 
+# Build arguments
+ARG buildNumber
+ENV gomintBuildNumber=$buildNumber
+
 # Copy over minimal JRE
 COPY --from=jlink /jlinked /opt/java/
 
@@ -18,7 +22,7 @@ ENV JAVA_HOME=/opt/java/ \
 
 # This is the line from AdoptOpenJDK:
 RUN apk --update add --no-cache ca-certificates curl openssl binutils xz \
-    && GOMINT_URL="http://ci.gomint.io/job/GoMint/job/master/lastSuccessfulBuild/artifact/gomint-server/target/GoMint.jar" \
+    && GOMINT_URL="http://ci.gomint.io/job/GoMint/job/master/${gomintBuildNumber}/artifact/gomint-server/target/GoMint.jar" \
     && GLIBC_VER="2.28-r0" \
     && ALPINE_GLIBC_REPO="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" \
     && GCC_LIBS_URL="https://archive.archlinux.org/packages/g/gcc-libs/gcc-libs-8.2.1%2B20180831-1-x86_64.pkg.tar.xz" \
