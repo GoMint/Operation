@@ -20,7 +20,7 @@ pipeline {
                 dir("docker") {
                     script {
                         docker.withRegistry('https://registry.hub.docker.com', 'docker-gomint') {
-                            def customImage = docker.build("gomint/gomint:${env.BUILD_ID}", "--build-arg buildNumber=${GOMINT_BUILD_NUMBER}")
+                            def customImage = docker.build("gomint/gomint:${env.BUILD_ID}", "--build-arg buildNumber=${GOMINT_BUILD_NUMBER} .")
                             customImage.push()
                             customImage.push("latest")
                         }
