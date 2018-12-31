@@ -21,7 +21,7 @@ ENV JAVA_HOME=/opt/java/ \
     PATH="/opt/java/bin:$PATH"
 
 # This is the line from AdoptOpenJDK:
-RUN apk --update add --no-cache ca-certificates curl openssl binutils xz \
+RUN apk --update add --no-cache ca-certificates curl openssl binutils xz openssl \
     && GOMINT_URL="http://ci.gomint.io/job/GoMint/job/master/${gomintBuildNumber}/artifact/gomint-server/target/GoMint.jar" \
     && GLIBC_VER="2.28-r0" \
     && ALPINE_GLIBC_REPO="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" \
