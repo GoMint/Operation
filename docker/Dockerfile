@@ -22,8 +22,7 @@ ENV JAVA_HOME=/opt/java/ \
     ALPINE_MIRROR="http://dl-cdn.alpinelinux.org/alpine"
 
 # This is the line from AdoptOpenJDK:
-RUN echo "${ALPINE_MIRROR}/edge/main" >> /etc/apk/repositories \
-    && apk --update add --no-cache ca-certificates curl openssl binutils xz libressl2.7-libcrypto \
+RUN apk --update add --no-cache ca-certificates curl openssl binutils xz \
     && GOMINT_URL="http://ci.gomint.io/job/GoMint/job/master/${gomintBuildNumber}/artifact/gomint-server/target/GoMint.jar" \
     && GLIBC_VER="2.28-r0" \
     && ALPINE_GLIBC_REPO="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" \
@@ -45,13 +44,22 @@ RUN echo "${ALPINE_MIRROR}/edge/main" >> /etc/apk/repositories \
     && mkdir /tmp/libz \
     && tar -xf /tmp/libz.tar.xz -C /tmp/libz \
     && mv /tmp/libz/usr/lib/libz.so* /usr/glibc-compat/lib \
+    && apk --update add --virtual build-dependencies --no-cache perl make gcc musl-dev linux-headers \
+    && OPENSSL_URL="https://www.openssl.org/source/openssl-1.1.1a.tar.gz" \
+    && OPENSSL_SHA256="fc20130f8b7cbd2fb918b2f14e2f429e109c31ddd0fb38fc5d71d9ffed3f9f41" \
+    && curl -Ls ${OPENSSL_URL} -o /tmp/openssl.tar.gz \
+    && echo "${OPENSSL_SHA256}  /tmp/openssl.tar.gz" | sha256sum -c - \
+    && mkdir /tmp/openssl \
+    && tar -xf /tmp/openssl.tar.gz -C /tmp/openssl \
+    && cd /tmp/openssl/openssl-1.1.1a && chmod +x config \
+    && ./config && make install_sw \
     && mkdir /gomint/ && mkdir /gomint/plugins/ && mkdir /gomint/internal/ \
     && curl -Ls "${GOMINT_URL}" -o /gomint/GoMint.jar \
-    && apk del binutils curl xz \
+    && apk del binutils curl xz build-dependencies \
     && rm -rf /tmp/${GLIBC_VER}.apk /tmp/gcc /tmp/gcc-libs.tar.xz /tmp/libz /tmp/libz.tar.xz /var/cache/apk/* \
     && cd /gomint && java -XX:+UseAppCDS -XX:DumpLoadedClassList=internal/classes.lst -jar GoMint.jar --exit-after-boot \
     && java -XX:+UseAppCDS -Xshare:dump -XX:SharedClassListFile=internal/classes.lst -XX:SharedArchiveFile=internal/app-cds.jsa --class-path GoMint.jar \
-    && rm /gomint/internal/classes.lst
+    && rm /gomint/internal/classes.lst && rm /tmp/* -rf
 
 VOLUME /gomint/plugins
 WORKDIR /gomint
