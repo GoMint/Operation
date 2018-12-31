@@ -18,10 +18,12 @@ COPY --from=jlink /jlinked /opt/java/
 
 # Set env first to reduce layers in the container image
 ENV JAVA_HOME=/opt/java/ \
-    PATH="/opt/java/bin:$PATH"
+    PATH="/opt/java/bin:$PATH" \
+    ALPINE_MIRROR="http://dl-cdn.alpinelinux.org/alpine"
 
 # This is the line from AdoptOpenJDK:
-RUN apk --update add --no-cache ca-certificates curl openssl binutils xz openssl \
+RUN echo "${ALPINE_MIRROR}/edge/main" >> /etc/apk/repositories \
+    && apk --update add --no-cache ca-certificates curl openssl binutils xz libressl2.7-libcrypto \
     && GOMINT_URL="http://ci.gomint.io/job/GoMint/job/master/${gomintBuildNumber}/artifact/gomint-server/target/GoMint.jar" \
     && GLIBC_VER="2.28-r0" \
     && ALPINE_GLIBC_REPO="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" \
