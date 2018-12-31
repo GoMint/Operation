@@ -54,4 +54,4 @@ RUN apk --update add --no-cache ca-certificates curl openssl binutils xz \
 VOLUME /gomint/plugins
 WORKDIR /gomint
 
-CMD ["java", "-Xshare:on", "-XX:SharedArchiveFile=internal/app-cds.jsa", "-jar", "GoMint.jar"]
+CMD ["java", "--add-opens", "java.base/jdk.internal.loader=ALL-UNNAMED", "-Xshare:on", "-XX:SharedArchiveFile=internal/app-cds.jsa", "-jar", "GoMint.jar"]
