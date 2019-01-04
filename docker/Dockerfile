@@ -5,7 +5,7 @@ RUN ["jlink", "--compress=2", "--strip-debug", "--module-path", "/opt/java/openj
   "--add-modules", "java.base", "--add-modules", "java.xml", "--add-modules", "java.logging", \
   "--add-modules", "java.management", "--add-modules", "java.naming", "--add-modules", "java.desktop", \
   "--add-modules", "java.scripting", "--add-modules", "java.sql", "--add-modules", "jdk.unsupported", \
-  "--add-modules", "jdk.crypto.ec", "--output", "/jlinked"]
+  "--add-modules", "jdk.crypto.ec", "--add-modules", "jdk.internal.vm.ci", "--output", "/jlinked"]
 
 FROM alpine
 
