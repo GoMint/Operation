@@ -1,0 +1,3 @@
+listener:
+  port: 19132
+  ip: 0.0.0.0
